@@ -1,0 +1,115 @@
+---
+import { getEntry } from "astro:content";
+
+interface Project {
+  title: string;
+  problem: string;
+  built: string;
+  result: string;
+  link: string;
+}
+
+const FILE = "src/content/shipped.md";
+const PROJECT_KEYS = ["title", "problem", "built", "result", "link"] as const;
+
+function requireString(value: unknown, where: string): string {
+  if (typeof value !== "string" || value.trim() === "") {
+    throw new Error(`${FILE}: ${where} must be a non-empty string`);
+  }
+  return value;
+}
+
+// Every card and label comes from shipped.md frontmatter; nothing is hardcoded here.
+const entry = await getEntry("pages", "shipped");
+if (!entry) throw new Error(`${FILE} is missing`);
+const data = entry.data as Record<string, unknown>;
+const heading = requireString(data.heading, `frontmatter "heading"`);
+const linkLabel = requireString(data.linkLabel, `frontmatter "linkLabel"`);
+if (!Array.isArray(data.projects) || data.projects.length === 0) {
+  throw new Error(`${FILE}: frontmatter "projects" must be a non-empty list`);
+}
+const projects: Project[] = data.projects.map((raw: Record<string, unknown>, i: number) => {
+  const project = Object.fromEntries(
+    PROJECT_KEYS.map((key) => [key, requireString(raw?.[key], `projects[${i}].${key}`)]),
+  ) as unknown as Project;
+  if (!new URL(project.link).searchParams.has("utm_source")) {
+    throw new Error(`${FILE}: projects[${i}].link is missing its UTM parameters`);
+  }
+  return project;
+});
+---
+
+<section id="shipped" class="shipped" aria-labelledby="shipped-heading">
+  <div class="container">
+    <h2 id="shipped-heading">{heading}</h2>
+    <ul class="shipped__grid" role="list">
+      {projects.map((project, i) => (
+        <li class="card" data-reveal>
+          <h3 id={`shipped-${i}`}>{project.title}</h3>
+          <p class="card__result">{project.result}</p>
+          <p class="card__problem">{project.problem}</p>
+          <p>{project.built}</p>
+          <a class="card__link" href={project.link} aria-describedby={`shipped-${i}`}>
+            {linkLabel}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<script>
+  import "../scripts/reveal";
+</script>
+
+<style>
+  .shipped {
+    padding-block: var(--space-7);
+  }
+
+  .shipped__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  @media (min-width: 48rem) {
+    .shipped__grid {
+      grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    }
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+
+  .card h3 {
+    margin-bottom: var(--space-3);
+  }
+
+  .card__result {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    line-height: var(--leading-tight);
+    color: var(--color-accent);
+  }
+
+  .card__problem {
+    color: var(--color-muted);
+  }
+
+  .card__link {
+    margin-top: auto;
+    padding-block: var(--space-2);
+    font-weight: 600;
+  }
+</style>

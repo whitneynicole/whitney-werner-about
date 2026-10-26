@@ -1,0 +1,52 @@
+---
+import { getEntry, render } from "astro:content";
+import { getSiteMeta } from "../data/site";
+
+// Name, positioning and site link come from hero.md frontmatter (via getSiteMeta);
+// the intro is the markdown body.
+const meta = await getSiteMeta();
+const hero = await getEntry("pages", "hero");
+if (!hero) throw new Error("src/content/hero.md is missing");
+const { Content } = await render(hero);
+---
+
+<section class="hero" aria-labelledby="hero-name">
+  <div class="container hero__inner">
+    <h1 id="hero-name">{meta.name}</h1>
+    <p class="hero__title">{meta.title}</p>
+    <div class="hero__intro">
+      <Content />
+    </div>
+    <p class="hero__link"><a href={meta.site}>{meta.siteHost}</a></p>
+  </div>
+</section>
+
+<style>
+  .hero {
+    padding-block: var(--space-8) var(--space-7);
+  }
+
+  .hero__inner > * {
+    max-width: 42rem;
+  }
+
+  h1 {
+    margin-bottom: var(--space-3);
+  }
+
+  .hero__title {
+    font-size: var(--text-xl);
+    color: var(--color-accent);
+    font-weight: 500;
+    margin-bottom: var(--space-6);
+  }
+
+  .hero__intro {
+    font-size: var(--text-lg);
+  }
+
+  .hero__link {
+    margin: var(--space-5) 0 0;
+    font-weight: 600;
+  }
+</style>
