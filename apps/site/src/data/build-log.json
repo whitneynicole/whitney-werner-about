@@ -1,0 +1,140 @@
+{
+  "repoUrl": "https://github.com/whitneynicole/whitney-werner-about",
+  "tickets": [
+    {
+      "ticket": "T01",
+      "title": "Scaffold the monorepo and design system",
+      "wave": 1,
+      "prs": [
+        {
+          "number": 1,
+          "url": "https://github.com/whitneynicole/whitney-werner-about/pull/1"
+        }
+      ],
+      "branches": [
+        "fredrin-cmvphkjy-mvphs65v"
+      ],
+      "firstCommitAt": "2026-10-26T16:52:07Z",
+      "mergedAt": "2026-10-26T17:04:39Z",
+      "durationMinutes": 13,
+      "commits": 3,
+      "files": [
+        "apps/site/astro.config.mjs",
+        "apps/site/package.json",
+        "apps/site/public/fonts/inter-latin-wght-normal.woff2",
+        "apps/site/public/fonts/lora-latin-wght-normal.woff2",
+        "apps/site/src/content.config.ts",
+        "apps/site/src/content/field-report.md",
+        "apps/site/src/content/hero.md",
+        "apps/site/src/content/how-i-work.md",
+        "apps/site/src/content/playbook.md",
+        "apps/site/src/content/shipped.md",
+        "apps/site/src/data/nav.ts",
+        "apps/site/src/data/site.ts",
+        "apps/site/src/layouts/Base.astro",
+        "apps/site/src/pages/index.astro",
+        "apps/site/src/styles/fonts.css",
+        "apps/site/src/styles/global.css",
+        "apps/site/src/styles/tokens.css",
+        "apps/site/tsconfig.json",
+        "package.json",
+        "packages/agent-ready/package.json",
+        "pnpm-lock.yaml",
+        "pnpm-workspace.yaml"
+      ],
+      "conflictFix": false,
+      "parallelWith": []
+    },
+    {
+      "ticket": "T03",
+      "title": "Hero, \"Shipped,\" and \"How I work with agents\" sections",
+      "wave": 1,
+      "prs": [
+        {
+          "number": 2,
+          "url": "https://github.com/whitneynicole/whitney-werner-about/pull/2"
+        }
+      ],
+      "branches": [
+        "fredrin-cmvphl0m-mvpijjmp"
+      ],
+      "firstCommitAt": "2026-10-26T17:13:34Z",
+      "mergedAt": "2026-10-26T17:49:09Z",
+      "durationMinutes": 36,
+      "commits": 2,
+      "files": [
+        "apps/site/src/content/how-i-work.md",
+        "apps/site/src/content/shipped.md",
+        "apps/site/src/pages/index.astro",
+        "apps/site/src/scripts/reveal.ts",
+        "apps/site/src/sections/Hero.astro",
+        "apps/site/src/sections/HowIWork.astro",
+        "apps/site/src/sections/Shipped.astro"
+      ],
+      "conflictFix": false,
+      "parallelWith": [
+        "T02"
+      ]
+    },
+    {
+      "ticket": "T02",
+      "title": "Build the `agent-ready` CLI",
+      "wave": 1,
+      "prs": [
+        {
+          "number": 3,
+          "url": "https://github.com/whitneynicole/whitney-werner-about/pull/3"
+        }
+      ],
+      "branches": [
+        "fredrin-cmvphl07-mvpijirg"
+      ],
+      "firstCommitAt": "2026-10-26T17:15:41Z",
+      "mergedAt": "2026-10-26T17:32:34Z",
+      "durationMinutes": 17,
+      "commits": 3,
+      "files": [
+        "package.json",
+        "packages/agent-ready/package.json",
+        "packages/agent-ready/src/args.ts",
+        "packages/agent-ready/src/checks/docs.ts",
+        "packages/agent-ready/src/checks/helpers.ts",
+        "packages/agent-ready/src/checks/hygiene.ts",
+        "packages/agent-ready/src/checks/index.ts",
+        "packages/agent-ready/src/checks/tooling.ts",
+        "packages/agent-ready/src/cli.ts",
+        "packages/agent-ready/src/format.ts",
+        "packages/agent-ready/src/index.ts",
+        "packages/agent-ready/src/main.ts",
+        "packages/agent-ready/src/repo.ts",
+        "packages/agent-ready/src/score.ts",
+        "packages/agent-ready/src/types.ts",
+        "packages/agent-ready/src/version.ts",
+        "packages/agent-ready/src/walk.ts",
+        "packages/agent-ready/test/checks.test.ts",
+        "packages/agent-ready/test/cli.test.ts",
+        "packages/agent-ready/test/fixtures.test.ts",
+        "packages/agent-ready/test/fixtures/bare/index.js",
+        "packages/agent-ready/test/fixtures/good/.env.example",
+        "packages/agent-ready/test/fixtures/good/.github/workflows/ci.yml",
+        "packages/agent-ready/test/fixtures/good/.gitignore",
+        "packages/agent-ready/test/fixtures/good/AGENTS.md",
+        "packages/agent-ready/test/fixtures/good/package-lock.json",
+        "packages/agent-ready/test/fixtures/good/package.json",
+        "packages/agent-ready/test/fixtures/good/src/server.js",
+        "packages/agent-ready/test/fixtures/secret/README.md",
+        "packages/agent-ready/test/fixtures/secret/package.json",
+        "packages/agent-ready/test/fixtures/secret/src/index.js",
+        "packages/agent-ready/test/helpers.ts",
+        "packages/agent-ready/tsconfig.build.json",
+        "packages/agent-ready/tsconfig.json",
+        "packages/agent-ready/vitest.config.ts",
+        "pnpm-lock.yaml"
+      ],
+      "conflictFix": false,
+      "parallelWith": [
+        "T03"
+      ]
+    }
+  ]
+}
