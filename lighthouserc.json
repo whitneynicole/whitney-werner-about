@@ -3,7 +3,7 @@
     "collect": {
       "staticDistDir": "apps/site/dist",
       "url": ["/"],
-      "numberOfRuns": 1,
+      "numberOfRuns": 3,
       "settings": {
         "chromeFlags": "--no-sandbox --headless=new"
       }
