@@ -20,6 +20,7 @@ const description = Astro.props.description ?? `${meta.name}: ${meta.title}.`;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
+    <!-- Keep in sync with --color-bg in styles/tokens.css. -->
     <meta name="theme-color" content="#f6f1e8" />
 
     <meta property="og:type" content="website" />
