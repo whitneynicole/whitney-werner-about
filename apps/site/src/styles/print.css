@@ -1,0 +1,83 @@
+/* Print: ink on white, no chrome, cards kept whole. Aims for two Letter/A4 pages. */
+@media print {
+  @page {
+    margin: 1.5cm;
+  }
+
+  :root {
+    --color-bg: #fff;
+    --color-surface: #fff;
+  }
+
+  html {
+    font-size: 11pt;
+  }
+
+  body {
+    min-height: 0;
+    line-height: 1.45;
+  }
+
+  .skip-link,
+  .site-header nav {
+    display: none;
+  }
+
+  .container {
+    max-width: none;
+    padding-inline: 0;
+  }
+
+  .site-header__inner,
+  .site-footer__inner {
+    padding-block: 0.5rem;
+  }
+
+  main section {
+    padding-block: 0.75rem !important;
+  }
+
+  h1 { font-size: 22pt; }
+  h2 { font-size: 16pt; margin-bottom: 0.5rem; }
+  h3 { font-size: 12pt; }
+
+  h2,
+  h3 {
+    break-after: avoid;
+  }
+
+  /* Section styles are scoped (higher specificity), hence !important. */
+  .shipped__grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5rem !important;
+  }
+
+  .card {
+    padding: 0.6rem 0.75rem !important;
+    border-radius: 6px !important;
+    font-size: 9.5pt;
+  }
+
+  .card p {
+    margin-bottom: 0.35rem;
+  }
+
+  .card__result {
+    font-size: 13pt !important;
+  }
+
+  .card__link {
+    padding-block: 0 !important;
+  }
+
+  li,
+  [data-reveal] {
+    break-inside: avoid;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  a {
+    color: inherit;
+  }
+}
