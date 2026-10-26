@@ -1,0 +1,22 @@
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # build replay needs full history
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+      # T04 adds: agent-ready score gate, Playwright + axe, Lighthouse CI
