@@ -1,0 +1,137 @@
+---
+import "../styles/global.css";
+import { nav } from "../data/nav";
+import { getSiteMeta } from "../data/site";
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const meta = await getSiteMeta();
+const title = Astro.props.title ?? `${meta.name} | ${meta.title}`;
+const description = Astro.props.description ?? meta.description;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <!-- Keep in sync with --color-bg in styles/tokens.css. -->
+    <meta name="theme-color" content="#f6f1e8" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:site_name" content={meta.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+
+    <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/lora-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container site-header__inner">
+        <a class="site-header__name" href="/">{meta.name}</a>
+        <nav aria-label="Primary">
+          <ul class="site-nav" role="list">
+            {nav.map((item) => (
+              <li>
+                <a href={item.href}>{item.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="container site-footer__inner">
+        <p>{meta.name}</p>
+        <p><a href={meta.site}>{meta.siteHost}</a></p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .skip-link {
+    position: absolute;
+    left: var(--space-4);
+    top: var(--space-4);
+    z-index: 10;
+    padding: var(--space-2) var(--space-4);
+    background: var(--color-accent);
+    color: var(--color-bg);
+    border-radius: var(--radius-md);
+    transform: translateY(-200%);
+  }
+
+  .skip-link:focus {
+    transform: none;
+  }
+
+  .site-header {
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .site-header__inner,
+  .site-footer__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3) var(--space-5);
+    padding-block: var(--space-4);
+  }
+
+  .site-header__name {
+    font-family: var(--font-heading);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+
+  .site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .site-nav a {
+    display: inline-block;
+    padding-block: var(--space-2);
+    font-weight: 500;
+  }
+
+  main {
+    flex: 1;
+  }
+
+  main:focus {
+    outline: none;
+  }
+
+  .site-footer {
+    border-top: 1px solid var(--color-border);
+    color: var(--color-muted);
+    font-size: var(--text-sm);
+  }
+
+  .site-footer p {
+    margin: 0;
+  }
+</style>
