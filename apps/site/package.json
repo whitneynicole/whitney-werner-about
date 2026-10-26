@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "prebuild": "tsx scripts/build-log.ts",
-    "build": "astro build",
+    "build": "pnpm --filter agent-ready build && astro build",
     "preview": "astro preview",
     "typecheck": "pnpm --filter agent-ready build && astro check"
   },

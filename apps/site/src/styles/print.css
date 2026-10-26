@@ -30,7 +30,7 @@
 
   .site-header__inner,
   .site-footer__inner {
-    padding-block: 0.5rem;
+    padding-block: 0.5rem !important;
   }
 
   main section {
