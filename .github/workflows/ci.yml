@@ -3,9 +3,44 @@ on:
   pull_request:
   push:
     branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  LHCI_VERSION: 0.15.1
+
 jobs:
-  checks:
+  typecheck:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
         with:
@@ -16,7 +51,49 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm typecheck
-      - run: pnpm test
       - run: pnpm build
-      # T04 adds: agent-ready score gate, Playwright + axe, Lighthouse CI
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site-dist
+          path: apps/site/dist
+          retention-days: 3
+
+  quality:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with:
+          name: site-dist
+          path: apps/site/dist
+
+      - name: agent-ready score
+        run: pnpm agent-ready . --min 80
+
+      - name: Install Playwright Chromium
+        run: pnpm --filter site exec playwright install --with-deps --only-shell chromium
+      - name: Playwright smoke + axe
+        run: |
+          pnpm --filter site exec astro preview --port 4321 &
+          for i in $(seq 30); do curl -sf http://localhost:4321/ >/dev/null && break; sleep 1; done
+          pnpm --filter site exec playwright test --reporter=line
+        env:
+          SITE_URL: http://localhost:4321
+
+      - name: Lighthouse CI
+        run: npx --yes @lhci/cli@${{ env.LHCI_VERSION }} autorun
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse
+          path: .lighthouseci
+          if-no-files-found: ignore
+          retention-days: 7
