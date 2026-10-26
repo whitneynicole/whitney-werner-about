@@ -10,7 +10,9 @@ const OUT = fileURLToPath(new URL("../src/data/build-log.json", import.meta.url)
 const TICKET = /\b(T\d{2}):/;
 const PR_REF = /\(#(\d+)\)\s*$/;
 // The ticket spec: a rebase or conflict fix shows up in commit messages.
+// GitHub closing keywords ("Resolves #12") are stripped first so they don't count.
 const CONFLICT = /\b(rebas(e|ed|ing)|resolv(e|ed|es|ing))\b/i;
+const CLOSES_ISSUE = /\bresolv(e|ed|es)\s+#\d+/gi;
 
 interface PrCommit {
   authoredDate: string;
@@ -84,6 +86,7 @@ function ticketCommitsOnMain(): Map<number, string> {
   return byPr;
 }
 
+// GitHub caps nodes per query; with commits + files, 50 PRs already exceeds it. This repo has 8 tickets.
 function mergedPrs(): Pr[] {
   const fields = "number,title,url,headRefName,createdAt,mergedAt,commits,files";
   const json = run("gh", ["pr", "list", "--state", "merged", "--limit", "30", "--json", fields]);
@@ -135,7 +138,8 @@ function buildLog(byPr: Map<number, string>, prs: Pr[]): BuildLog {
       durationMinutes: minutesBetween(firstCommitAt, mergedAt),
       commits: commits.length,
       files: [...new Set(group.flatMap((pr) => pr.files.map((f) => f.path)))].sort(),
-      conflictFix: commits.some((c) => CONFLICT.test(`${c.messageHeadline}\n${c.messageBody}`)),
+      conflictFix: commits.some((c) =>
+        CONFLICT.test(`${c.messageHeadline}\n${c.messageBody}`.replace(CLOSES_ISSUE, ""))),
       parallelWith: [],
     };
   });

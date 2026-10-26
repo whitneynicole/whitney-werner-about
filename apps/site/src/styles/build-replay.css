@@ -57,6 +57,7 @@
 }
 
 .lane__name {
+  overflow: hidden;
   font-size: var(--text-sm);
   font-weight: 600;
   text-align: center;
@@ -76,7 +77,7 @@
 .lane__bar {
   position: absolute;
   inset-inline: 0;
-  top: var(--start);
+  top: min(var(--start), calc(100% - 0.75rem));
   height: max(var(--span), 0.75rem);
   background: var(--color-accent);
   border-radius: var(--radius-sm);
@@ -86,8 +87,7 @@
   background: repeating-linear-gradient(
     135deg, var(--color-accent) 0 6px, var(--color-ink) 6px 12px
   );
-  outline: 2px dashed var(--color-ink);
-  outline-offset: 2px;
+  box-shadow: 0 0 0 2px var(--color-surface), 0 0 0 4px var(--color-ink);
 }
 
 /* Desktop: lanes are rows and time runs left to right. */
@@ -122,7 +122,7 @@
   .lane__bar {
     inset-block: 0;
     inset-inline: auto;
-    left: var(--start);
+    left: min(var(--start), calc(100% - 0.75rem));
     width: max(var(--span), 0.75rem);
     height: auto;
   }

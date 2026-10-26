@@ -8,7 +8,7 @@ const FILE = "src/content/build-replay.md";
 const COPY_KEYS = [
   "heading", "intro", "badge", "timelineLabel", "timelineHint", "listHeading",
   "startedLabel", "mergedLabel", "branchLabel", "durationLabel", "durationUnit",
-  "commitsLabel", "filesLabel", "prLabel", "parallelLabel", "conflictMark", "whatBrokeLabel",
+  "commitsLabel", "filesLabel", "prLabel", "parallelLabel", "conflictMark", "whatBrokeLabel", "emptyLabel",
 ] as const;
 
 // Every label comes from build-replay.md frontmatter; the numbers come from the data files.
@@ -28,11 +28,12 @@ const copy = Object.fromEntries(
 const badge = copy.badge
   .replace("{score}", String(agentReady.score))
   .replace("{max}", String(agentReady.maxScore));
-const whatBrokeHref = `${log.repoUrl}/blob/main/README.md#what-broke`;
+// README.md#what-broke is written by T08; skip the link if the repo URL is unknown.
+const whatBrokeHref = log.repoUrl ? `${log.repoUrl}/blob/main/README.md#what-broke` : null;
 
 const tickets = log.tickets;
-const startMs = Math.min(...tickets.map((t) => Date.parse(t.firstCommitAt)));
-const endMs = Math.max(...tickets.map((t) => Date.parse(t.mergedAt)));
+const startMs = tickets.length ? Math.min(...tickets.map((t) => Date.parse(t.firstCommitAt))) : 0;
+const endMs = tickets.length ? Math.max(...tickets.map((t) => Date.parse(t.mergedAt))) : 0;
 const rangeMs = Math.max(endMs - startMs, 1);
 const pct = (ms: number) => `${((ms / rangeMs) * 100).toFixed(2)}%`;
 
@@ -63,6 +64,8 @@ const lanes = tickets.map((t) => {
     <p class="replay__intro">{copy.intro}</p>
     <p class="replay__badge">{badge}</p>
 
+    {tickets.length === 0 && <p>{copy.emptyLabel}</p>}
+    {tickets.length > 0 && <>
     <figure class="timeline" aria-labelledby="replay-timeline-caption">
       <figcaption id="replay-timeline-caption">
         {copy.timelineLabel} <span class="timeline__hint">{copy.timelineHint}</span>
@@ -119,7 +122,7 @@ const lanes = tickets.map((t) => {
                 </>
               )}
             </dl>
-            {t.conflictFix && <p><a href={whatBrokeHref}>{copy.whatBrokeLabel}</a></p>}
+            {t.conflictFix && whatBrokeHref && <p><a href={whatBrokeHref}>{copy.whatBrokeLabel}</a></p>}
             <p class="run__files-label">{copy.filesLabel} ({t.files.length})</p>
             <ul class="run__files">
               {t.files.map((file) => <li><code>{file}</code></li>)}
@@ -128,6 +131,7 @@ const lanes = tickets.map((t) => {
         </li>
       ))}
     </ol>
+    </>}
   </div>
 </section>
 
