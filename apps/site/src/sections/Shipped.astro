@@ -11,6 +11,12 @@ interface Project {
 
 const FILE = "src/content/shipped.md";
 const PROJECT_KEYS = ["title", "problem", "built", "result", "link"] as const;
+// Hard rule from CONTEXT.md: every whitneywerner.com link carries exactly these.
+const REQUIRED_UTM: Record<string, string> = {
+  utm_source: "fredrin",
+  utm_medium: "job_application",
+  utm_campaign: "job_search",
+};
 
 function requireString(value: unknown, where: string): string {
   if (typeof value !== "string" || value.trim() === "") {
@@ -32,8 +38,16 @@ const projects: Project[] = data.projects.map((raw: Record<string, unknown>, i: 
   const project = Object.fromEntries(
     PROJECT_KEYS.map((key) => [key, requireString(raw?.[key], `projects[${i}].${key}`)]),
   ) as unknown as Project;
-  if (!new URL(project.link).searchParams.has("utm_source")) {
-    throw new Error(`${FILE}: projects[${i}].link is missing its UTM parameters`);
+  let params: URLSearchParams;
+  try {
+    params = new URL(project.link).searchParams;
+  } catch {
+    throw new Error(`${FILE}: projects[${i}].link is not a valid URL`);
+  }
+  for (const [key, value] of Object.entries(REQUIRED_UTM)) {
+    if (params.get(key) !== value) {
+      throw new Error(`${FILE}: projects[${i}].link must have ${key}=${value}`);
+    }
   }
   return project;
 });
@@ -49,7 +63,12 @@ const projects: Project[] = data.projects.map((raw: Record<string, unknown>, i: 
           <p class="card__result">{project.result}</p>
           <p class="card__problem">{project.problem}</p>
           <p>{project.built}</p>
-          <a class="card__link" href={project.link} aria-describedby={`shipped-${i}`}>
+          <a
+            class="card__link"
+            id={`shipped-${i}-link`}
+            href={project.link}
+            aria-labelledby={`shipped-${i}-link shipped-${i}`}
+          >
             {linkLabel}
           </a>
         </li>
