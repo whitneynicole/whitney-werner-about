@@ -3,6 +3,8 @@ import { getEntry } from "astro:content";
 export interface SiteMeta {
   name: string;
   title: string;
+  /** Meta and Open Graph description. */
+  description: string;
   /** whitneywerner.com link, already carrying the required UTM params. */
   site: string;
   /** Hostname of `site`, for link text. */
@@ -26,6 +28,7 @@ export async function getSiteMeta(): Promise<SiteMeta> {
   return {
     name: requireString(data, "name"),
     title: requireString(data, "title"),
+    description: requireString(data, "description"),
     site,
     siteHost: new URL(site).hostname,
   };

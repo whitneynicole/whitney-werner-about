@@ -10,7 +10,7 @@ interface Props {
 
 const meta = await getSiteMeta();
 const title = Astro.props.title ?? `${meta.name} | ${meta.title}`;
-const description = Astro.props.description ?? `${meta.name}: ${meta.title}.`;
+const description = Astro.props.description ?? meta.description;
 ---
 
 <!doctype html>

@@ -3,6 +3,7 @@ name: Whitney Werner
 title: Full-stack engineer, AI agents and systems integration
 site: https://whitneywerner.com/?utm_source=fredrin&utm_medium=job_application&utm_campaign=job_search
 location: Bentonville, Arkansas (remote)
+description: Full-stack engineer building AI agents and systems integrations. This page was built entirely through Fredrin tickets.
 ---
 
 I land software inside real teams. For 8 years I've been the technical person
