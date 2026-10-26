@@ -12,10 +12,12 @@ test("home page renders its landmarks", async ({ page }) => {
   await expect(page.getByRole("navigation", { name: "Primary" })).toBeVisible();
   await expect(page.locator("main#main")).toHaveCount(1);
   await expect(page.getByRole("contentinfo")).toBeVisible();
-  expect(await page.locator("h1").count()).toBeLessThanOrEqual(1);
+  await expect(page.locator("h1")).toHaveCount(1);
 });
 
 test("home page has no WCAG 2.2 AA violations", async ({ page }) => {
+  // reveal.ts fades cards in on scroll; axe would read half-faded text as low contrast.
+  await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(SITE_URL + "/");
   const results = await new AxeBuilder({ page })
     .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"])

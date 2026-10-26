@@ -61,7 +61,7 @@ jobs:
   quality:
     needs: build
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -78,12 +78,24 @@ jobs:
       - name: agent-ready score
         run: pnpm agent-ready . --min 80
 
+      # ubuntu-latest already has Chrome's system libraries, so no --with-deps.
+      - name: Read Playwright version
+        id: pw
+        run: echo "version=$(pnpm --filter site exec playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
       - name: Install Playwright Chromium
-        run: pnpm --filter site exec playwright install --with-deps --only-shell chromium
+        run: pnpm --filter site exec playwright install --only-shell chromium
       - name: Playwright smoke + axe
         run: |
           pnpm --filter site exec astro preview --port 4321 &
-          for i in $(seq 30); do curl -sf http://localhost:4321/ >/dev/null && break; sleep 1; done
+          for i in $(seq 30); do
+            curl -sf http://localhost:4321/ >/dev/null && break
+            if [ "$i" = 30 ]; then echo "::error::astro preview did not answer on :4321 after 30s"; exit 1; fi
+            sleep 1
+          done
           pnpm --filter site exec playwright test --reporter=line
 
       - name: Lighthouse CI
@@ -93,5 +105,6 @@ jobs:
         with:
           name: lighthouse
           path: .lighthouseci
+          include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 7
