@@ -18,7 +18,7 @@
       "id": "commands-documented",
       "title": "Commands documented",
       "status": "pass",
-      "detail": "install, test and build found in CONTEXT.md, CLAUDE.md and AGENTS.md",
+      "detail": "install, test and build found in CONTEXT.md, CLAUDE.md, AGENTS.md and README.md",
       "fix": ""
     },
     {
@@ -46,14 +46,14 @@
       "id": "env-example",
       "title": "Env example",
       "status": "pass",
-      "detail": ".env.example covers 1 file(s) reading process.env",
+      "detail": ".env.example covers 2 file(s) reading process.env",
       "fix": ""
     },
     {
       "id": "file-size",
       "title": "File size",
       "status": "pass",
-      "detail": "No source file over 400 lines (34 scanned)",
+      "detail": "No source file over 400 lines (42 scanned)",
       "fix": ""
     },
     {
@@ -74,7 +74,7 @@
       "id": "secrets",
       "title": "Secrets",
       "status": "pass",
-      "detail": "No key-shaped strings in 78 file(s)",
+      "detail": "No key-shaped strings in 94 file(s)",
       "fix": ""
     }
   ],
