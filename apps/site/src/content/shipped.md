@@ -1,4 +1,6 @@
 ---
+heading: Shipped
+linkLabel: Read the case study
 # One entry per card. Keep "result" short; it's shown large.
 projects:
   - title: Automated marketing reporting pipeline

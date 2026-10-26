@@ -1,0 +1,55 @@
+---
+import { getEntry, render } from "astro:content";
+
+// Heading from how-i-work.md frontmatter; the numbered list is the markdown body.
+const entry = await getEntry("pages", "how-i-work");
+if (!entry) throw new Error("src/content/how-i-work.md is missing");
+const heading = (entry.data as Record<string, unknown>).heading;
+if (typeof heading !== "string" || heading.trim() === "") {
+  throw new Error('src/content/how-i-work.md: frontmatter "heading" must be a non-empty string');
+}
+const { Content } = await render(entry);
+---
+
+<section id="how-i-work" class="how" aria-labelledby="how-heading">
+  <div class="container">
+    <h2 id="how-heading">{heading}</h2>
+    <div class="how__list" data-reveal>
+      <Content />
+    </div>
+  </div>
+</section>
+
+<script>
+  import "../scripts/reveal";
+</script>
+
+<style>
+  .how {
+    padding-block: var(--space-7) var(--space-8);
+  }
+
+  .how__list {
+    max-width: 44rem;
+  }
+
+  .how__list :global(ol) {
+    margin: 0;
+    padding-left: var(--space-5);
+  }
+
+  .how__list :global(li) {
+    padding-left: var(--space-2);
+    margin-bottom: var(--space-4);
+  }
+
+  .how__list :global(li::marker) {
+    font-family: var(--font-heading);
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  .how__list :global(strong) {
+    color: var(--color-ink);
+  }
+</style>
