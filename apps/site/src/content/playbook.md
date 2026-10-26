@@ -1,4 +1,7 @@
 ---
+heading: My first 30 days at a Fredrin customer
+doLabel: What I do
+signalLabel: How I know it worked
 steps:
   - when: Day 1
     do: Install Fredrin with the team lead, connect GitHub, and pick three real, small tickets from their backlog. Sit with one engineer while the first agent run happens.

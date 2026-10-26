@@ -1,0 +1,129 @@
+---
+import { getEntry } from "astro:content";
+
+interface Step {
+  when: string;
+  do: string;
+  signal: string;
+}
+
+const FILE = "src/content/playbook.md";
+const STEP_KEYS = ["when", "do", "signal"] as const;
+
+function requireString(value: unknown, where: string): string {
+  if (typeof value !== "string" || value.trim() === "") {
+    throw new Error(`${FILE}: ${where} must be a non-empty string`);
+  }
+  return value;
+}
+
+// Heading, labels and every step come from playbook.md frontmatter; nothing is hardcoded here.
+const entry = await getEntry("pages", "playbook");
+if (!entry) throw new Error(`${FILE} is missing`);
+const data = entry.data as Record<string, unknown>;
+const heading = requireString(data.heading, `frontmatter "heading"`);
+const doLabel = requireString(data.doLabel, `frontmatter "doLabel"`);
+const signalLabel = requireString(data.signalLabel, `frontmatter "signalLabel"`);
+if (!Array.isArray(data.steps) || data.steps.length === 0) {
+  throw new Error(`${FILE}: frontmatter "steps" must be a non-empty list`);
+}
+const steps: Step[] = data.steps.map(
+  (raw: Record<string, unknown>, i: number) =>
+    Object.fromEntries(
+      STEP_KEYS.map((key) => [key, requireString(raw?.[key], `steps[${i}].${key}`)]),
+    ) as unknown as Step,
+);
+---
+
+<section id="playbook" class="playbook" aria-labelledby="playbook-heading">
+  <div class="container">
+    <h2 id="playbook-heading">{heading}</h2>
+    <ol class="playbook__steps" role="list">
+      {steps.map((step, i) => (
+        <li class="step" data-reveal>
+          <h3 id={`playbook-${i}`} class="step__when">{step.when}</h3>
+          <div class="step__body">
+            <h4 class="step__label">{doLabel}</h4>
+            <p>{step.do}</p>
+            <h4 class="step__label">{signalLabel}</h4>
+            <p class="step__signal">{step.signal}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<script>
+  import "../scripts/reveal";
+</script>
+
+<style>
+  .playbook {
+    padding-block: var(--space-7);
+  }
+
+  .playbook__steps {
+    max-width: 48rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Each step hangs off a vertical rail; the dot marks where it sits in time. */
+  .step {
+    position: relative;
+    padding-left: var(--space-6);
+    padding-bottom: var(--space-6);
+    border-left: 2px solid var(--color-border);
+    margin-left: var(--space-2);
+  }
+
+  .step:last-child {
+    padding-bottom: 0;
+    border-left-color: transparent;
+  }
+
+  .step::before {
+    content: "";
+    position: absolute;
+    top: 0.35em;
+    left: calc(-1 * var(--space-2) - 1px);
+    width: var(--space-4);
+    height: var(--space-4);
+    border-radius: var(--radius-full);
+    background: var(--color-accent);
+    box-shadow: 0 0 0 4px var(--color-bg);
+  }
+
+  .step__when {
+    color: var(--color-accent);
+    margin-bottom: var(--space-3);
+  }
+
+  .step__body {
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+  }
+
+  .step__label {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .step__body p:last-child {
+    margin-bottom: 0;
+  }
+
+  .step__signal {
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+</style>
