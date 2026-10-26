@@ -9,7 +9,7 @@ npx agent-ready [path] [--json]
 ```
 
 ## Checks (each scored pass / warn / fail, with a one-line fix)
-1. **Project context:** a context file for agents exists (`PROJECT_CONTEXT.md`, `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, or similar) and is over 300 characters.
+1. **Project context:** a context file for agents exists (`CONTEXT.md`, `CLAUDE.md`, `AGENTS.md`, `.cursorrules`, or similar) and is over 300 characters.
 2. **Commands documented:** the context file or README names install, test, and build commands.
 3. **Test command:** `package.json` has a `test` script (or `pytest`/`go test` detected).
 4. **Typecheck or lint:** a `typecheck` or `lint` script exists.

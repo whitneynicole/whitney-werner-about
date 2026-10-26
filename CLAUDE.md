@@ -1,6 +1,6 @@
 # Instructions for coding agents in this repo
 
-Read `PROJECT_CONTEXT.md` first and follow it exactly. It is the source of truth
+Read `CONTEXT.md` first and follow it exactly. It is the source of truth
 for stack, commands, conventions, design, and hard rules.
 
 You are running as a Fredrin worker on one ticket. Rules:

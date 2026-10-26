@@ -27,7 +27,7 @@ your own repo and then shows the proof on the page:
 
 ## What's in this kit
 
-- `PROJECT_CONTEXT.md`: paste into Fredrin's Project Context before any tickets.
+- `CONTEXT.md`: paste into Fredrin's Project Context before any tickets.
 - `CLAUDE.md` / `AGENTS.md`: rules Claude Code (and other agents) read automatically in each ticket.
 - `COACH_PROMPT.md`: paste into a separate Claude Code session that guides and reviews (it never writes the code).
 - `tickets/`: ticket specs, in two waves. Paste each one as a Fredrin ticket.
@@ -37,7 +37,7 @@ your own repo and then shows the proof on the page:
 ## Order of operations (one evening plus a bit)
 
 1. Create an empty GitHub repo, e.g. `whitney-werner-about`. Push these files.
-2. Install Fredrin, connect GitHub, open the repo, paste `PROJECT_CONTEXT.md`.
+2. Install Fredrin, connect GitHub, open the repo, paste `CONTEXT.md`.
 3. **Wave 1, run in parallel:** tickets 01, 02, 03, 04.
    Review each PR yourself before merging. Never let a ticket approve itself.
 4. **Wave 2, run in parallel:** tickets 05, 06, 07. Tickets 05 and 06 both add
