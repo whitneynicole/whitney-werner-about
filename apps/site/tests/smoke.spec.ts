@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-// Runs against a served build. CI sets SITE_URL; locally run `pnpm --filter site preview`.
-const SITE_URL = process.env.SITE_URL ?? "http://localhost:4321";
+// Runs against a served build: `pnpm --filter site preview` (CI does the same).
+const SITE_URL = "http://localhost:4321";
 
 test("home page renders its landmarks", async ({ page }) => {
   const response = await page.goto(SITE_URL + "/");
