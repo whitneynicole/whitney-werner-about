@@ -3,9 +3,44 @@ on:
   pull_request:
   push:
     branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  LHCI_VERSION: 0.15.1
+
 jobs:
-  checks:
+  typecheck:
     runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
     steps:
       - uses: actions/checkout@v4
         with:
@@ -16,7 +51,63 @@ jobs:
           node-version: 20
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm typecheck
-      - run: pnpm test
       - run: pnpm build
-      # T04 adds: agent-ready score gate, Playwright + axe, Lighthouse CI
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site-dist
+          path: apps/site/dist
+          retention-days: 3
+
+  quality:
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - uses: actions/download-artifact@v4
+        with:
+          name: site-dist
+          path: apps/site/dist
+
+      - name: agent-ready score
+        run: pnpm agent-ready . --min 80
+
+      # ubuntu-latest already has Chrome's system libraries, so no --with-deps.
+      - name: Read Playwright version
+        id: pw
+        run: |
+          v=$(pnpm --filter site exec playwright --version | awk '{print $2}')
+          if [ -z "$v" ]; then echo "::error::could not read the Playwright version"; exit 1; fi
+          echo "version=$v" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Playwright Chromium
+        run: pnpm --filter site exec playwright install --only-shell chromium
+      - name: Playwright smoke + axe
+        run: |
+          pnpm --filter site exec astro preview --port 4321 &
+          for i in $(seq 30); do
+            curl -sf http://localhost:4321/ >/dev/null && break
+            if [ "$i" = 30 ]; then echo "::error::astro preview did not answer on :4321 after 30s"; exit 1; fi
+            sleep 1
+          done
+          pnpm --filter site exec playwright test --reporter=line
+
+      - name: Lighthouse CI
+        run: npx --yes @lhci/cli@${{ env.LHCI_VERSION }} autorun
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse
+          path: .lighthouseci
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 7
