@@ -42,7 +42,8 @@
   --radius-full: 999px;
 
   /* Layout */
-  --content-width: 72rem;
+  /* One centered column for header, main and footer; matches the ~44rem text measure plus gutters. */
+  --content-width: 48rem;
   --gutter: clamp(1rem, 4vw, 2rem);
 
   /* Motion */

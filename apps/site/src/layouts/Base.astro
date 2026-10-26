@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import "../styles/print.css";
 import { nav } from "../data/nav";
 import { getSiteMeta } from "../data/site";
 
@@ -11,6 +12,16 @@ interface Props {
 const meta = await getSiteMeta();
 const title = Astro.props.title ?? `${meta.name} | ${meta.title}`;
 const description = Astro.props.description ?? meta.description;
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const ogImage = new URL("/og.png", Astro.site).href;
+// No email or phone, ever (CONTEXT.md hard rule).
+const person = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: meta.name,
+  url: meta.site,
+  jobTitle: meta.title,
+};
 ---
 
 <!doctype html>
@@ -28,6 +39,17 @@ const description = Astro.props.description ?? meta.description;
     <meta property="og:site_name" content={meta.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${meta.name}, ${meta.title}`} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="sitemap" href="/sitemap.xml" />
+    <script type="application/ld+json" set:html={JSON.stringify(person)} />
 
     <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/lora-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
