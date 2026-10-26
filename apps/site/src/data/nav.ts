@@ -7,4 +7,5 @@ export interface NavItem {
 export const nav: NavItem[] = [
   { label: "Shipped", href: "#shipped" },
   { label: "Build replay", href: "#build-replay" },
+  { label: "Playbook", href: "#playbook" },
 ];
