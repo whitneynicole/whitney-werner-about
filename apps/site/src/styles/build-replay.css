@@ -1,0 +1,201 @@
+/* Styles for sections/BuildReplay.astro. Every class is prefixed, so global scope is safe. */
+.replay {
+  padding-block: var(--space-7);
+}
+
+.replay__intro {
+  max-width: 44rem;
+}
+
+.replay__badge {
+  display: inline-block;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.timeline {
+  margin: var(--space-5) 0 var(--space-6);
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.timeline figcaption,
+.timeline__axis {
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+/* Start time sits before the lanes, end time after them, in either direction. */
+.timeline__axis {
+  margin: var(--space-2) 0;
+}
+
+.timeline__axis--end {
+  text-align: end;
+}
+
+/* Mobile first: lanes are columns and time runs top to bottom. */
+.timeline__lanes {
+  display: flex;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.lane {
+  flex: 1 1 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.lane__name {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-align: center;
+}
+
+.lane__title {
+  display: none;
+}
+
+.lane__track {
+  position: relative;
+  height: 18rem;
+  background: var(--color-bg);
+  border-radius: var(--radius-sm);
+}
+
+.lane__bar {
+  position: absolute;
+  inset-inline: 0;
+  top: var(--start);
+  height: max(var(--span), 0.75rem);
+  background: var(--color-accent);
+  border-radius: var(--radius-sm);
+}
+
+.lane__bar--conflict {
+  background: repeating-linear-gradient(
+    135deg, var(--color-accent) 0 6px, var(--color-ink) 6px 12px
+  );
+  outline: 2px dashed var(--color-ink);
+  outline-offset: 2px;
+}
+
+/* Desktop: lanes are rows and time runs left to right. */
+@media (min-width: 48rem) {
+  .timeline__lanes {
+    flex-direction: column;
+  }
+
+  .lane {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .lane__name {
+    flex: 0 0 16rem;
+    overflow: hidden;
+    text-align: start;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .lane__title {
+    display: inline;
+    font-weight: 400;
+  }
+
+  .lane__track {
+    flex: 1;
+    height: 1.75rem;
+  }
+
+  .lane__bar {
+    inset-block: 0;
+    inset-inline: auto;
+    left: var(--start);
+    width: max(var(--span), 0.75rem);
+    height: auto;
+  }
+}
+
+.replay__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.run {
+  margin-bottom: var(--space-3);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.run--conflict {
+  border: 2px dashed var(--color-ink);
+}
+
+.run summary {
+  padding: var(--space-3) var(--space-4);
+  cursor: pointer;
+}
+
+.run__ticket {
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.run__meta,
+.run__flag {
+  margin-left: var(--space-2);
+  font-size: var(--text-sm);
+  color: var(--color-muted);
+}
+
+.run__flag {
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.run > :not(summary) {
+  margin-inline: var(--space-4);
+}
+
+.run__facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: var(--space-1) var(--space-4);
+  margin-block: 0 var(--space-4);
+}
+
+.run__facts dt {
+  color: var(--color-muted);
+}
+
+.run__facts dd {
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.run__files-label {
+  margin-bottom: var(--space-2);
+  color: var(--color-muted);
+}
+
+.run__files {
+  margin-bottom: var(--space-4);
+  padding-left: var(--space-5);
+  font-size: var(--text-sm);
+  overflow-wrap: anywhere;
+}

@@ -1,0 +1,82 @@
+{
+  "tool": "agent-ready",
+  "version": "0.1.0",
+  "repo": "whitney-werner-about",
+  "score": 100,
+  "maxScore": 100,
+  "min": 0,
+  "passed": true,
+  "checks": [
+    {
+      "id": "project-context",
+      "title": "Project context",
+      "status": "pass",
+      "detail": "CONTEXT.md (2,150 chars)",
+      "fix": ""
+    },
+    {
+      "id": "commands-documented",
+      "title": "Commands documented",
+      "status": "pass",
+      "detail": "install, test and build found in CONTEXT.md, CLAUDE.md and AGENTS.md",
+      "fix": ""
+    },
+    {
+      "id": "test-command",
+      "title": "Test command",
+      "status": "pass",
+      "detail": "package.json has a \"test\" script",
+      "fix": ""
+    },
+    {
+      "id": "typecheck-or-lint",
+      "title": "Typecheck or lint",
+      "status": "pass",
+      "detail": "package.json script: typecheck",
+      "fix": ""
+    },
+    {
+      "id": "ci",
+      "title": "CI",
+      "status": "pass",
+      "detail": ".github/workflows/ci.yml runs on pull_request",
+      "fix": ""
+    },
+    {
+      "id": "env-example",
+      "title": "Env example",
+      "status": "pass",
+      "detail": ".env.example covers 1 file(s) reading process.env",
+      "fix": ""
+    },
+    {
+      "id": "file-size",
+      "title": "File size",
+      "status": "pass",
+      "detail": "No source file over 400 lines (34 scanned)",
+      "fix": ""
+    },
+    {
+      "id": "git-hygiene",
+      "title": "Git hygiene",
+      "status": "pass",
+      "detail": ".gitignore covers node_modules and .env",
+      "fix": ""
+    },
+    {
+      "id": "lockfile",
+      "title": "Lockfile",
+      "status": "pass",
+      "detail": "pnpm-lock.yaml",
+      "fix": ""
+    },
+    {
+      "id": "secrets",
+      "title": "Secrets",
+      "status": "pass",
+      "detail": "No key-shaped strings in 78 file(s)",
+      "fix": ""
+    }
+  ],
+  "fixFirst": []
+}

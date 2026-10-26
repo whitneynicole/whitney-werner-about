@@ -1,0 +1,148 @@
+---
+import { getEntry } from "astro:content";
+import log from "../data/build-log.json";
+import agentReady from "../data/agent-ready.json";
+import "../styles/build-replay.css";
+
+const FILE = "src/content/build-replay.md";
+const COPY_KEYS = [
+  "heading", "intro", "badge", "timelineLabel", "timelineHint", "listHeading",
+  "startedLabel", "mergedLabel", "branchLabel", "durationLabel", "durationUnit",
+  "commitsLabel", "filesLabel", "prLabel", "parallelLabel", "conflictMark", "whatBrokeLabel",
+] as const;
+
+// Every label comes from build-replay.md frontmatter; the numbers come from the data files.
+const entry = await getEntry("pages", "build-replay");
+if (!entry) throw new Error(`${FILE} is missing`);
+const data = entry.data as Record<string, unknown>;
+const copy = Object.fromEntries(
+  COPY_KEYS.map((key) => {
+    const value = data[key];
+    if (typeof value !== "string" || value.trim() === "") {
+      throw new Error(`${FILE}: frontmatter "${key}" must be a non-empty string`);
+    }
+    return [key, value];
+  }),
+) as Record<(typeof COPY_KEYS)[number], string>;
+
+const badge = copy.badge
+  .replace("{score}", String(agentReady.score))
+  .replace("{max}", String(agentReady.maxScore));
+const whatBrokeHref = `${log.repoUrl}/blob/main/README.md#what-broke`;
+
+const tickets = log.tickets;
+const startMs = Math.min(...tickets.map((t) => Date.parse(t.firstCommitAt)));
+const endMs = Math.max(...tickets.map((t) => Date.parse(t.mergedAt)));
+const rangeMs = Math.max(endMs - startMs, 1);
+const pct = (ms: number) => `${((ms / rangeMs) * 100).toFixed(2)}%`;
+
+const timeFormat = new Intl.DateTimeFormat("en-US", {
+  month: "short", day: "numeric", hour: "2-digit", minute: "2-digit",
+  hour12: false, timeZone: "UTC", timeZoneName: "short",
+});
+const fmt = (iso: string | number) => timeFormat.format(new Date(iso));
+const iso = (ms: number) => new Date(ms).toISOString();
+
+const lanes = tickets.map((t) => {
+  const from = Date.parse(t.firstCommitAt) - startMs;
+  const span = Date.parse(t.mergedAt) - Date.parse(t.firstCommitAt);
+  const parallel = t.parallelWith.length ? `, ${copy.parallelLabel} ${t.parallelWith.join(", ")}` : "";
+  const conflict = t.conflictFix ? `, ${copy.conflictMark}` : "";
+  return {
+    ...t,
+    id: `replay-${t.ticket.toLowerCase()}`,
+    style: `--start: ${pct(from)}; --span: ${pct(span)};`,
+    label: `${t.ticket}: ${t.title}, ${t.durationMinutes} ${copy.durationUnit}${parallel}${conflict}`,
+  };
+});
+---
+
+<section id="build-replay" class="replay" aria-labelledby="replay-heading">
+  <div class="container">
+    <h2 id="replay-heading">{copy.heading}</h2>
+    <p class="replay__intro">{copy.intro}</p>
+    <p class="replay__badge">{badge}</p>
+
+    <figure class="timeline" aria-labelledby="replay-timeline-caption">
+      <figcaption id="replay-timeline-caption">
+        {copy.timelineLabel} <span class="timeline__hint">{copy.timelineHint}</span>
+      </figcaption>
+      <p class="timeline__axis"><time datetime={iso(startMs)}>{fmt(startMs)}</time></p>
+      <ol class="timeline__lanes" role="list">
+        {lanes.map((t) => (
+          <li class="lane">
+            <span class="lane__name" aria-hidden="true">
+              {t.ticket}<span class="lane__title"> {t.title}</span>
+            </span>
+            <span class="lane__track">
+              <a
+                class:list={["lane__bar", { "lane__bar--conflict": t.conflictFix }]}
+                href={`#${t.id}`}
+                style={t.style}
+                aria-label={t.label}
+                data-replay-bar
+              ></a>
+            </span>
+          </li>
+        ))}
+      </ol>
+      <p class="timeline__axis timeline__axis--end"><time datetime={iso(endMs)}>{fmt(endMs)}</time></p>
+    </figure>
+
+    <h3>{copy.listHeading}</h3>
+    <ol class="replay__list" role="list">
+      {lanes.map((t) => (
+        <li>
+          <details id={t.id} class:list={["run", { "run--conflict": t.conflictFix }]}>
+            <summary>
+              <span class="run__ticket">{t.ticket}</span> {t.title}
+              <span class="run__meta">{t.durationMinutes} {copy.durationUnit}</span>
+              {t.conflictFix && <span class="run__flag">{copy.conflictMark}</span>}
+            </summary>
+            <dl class="run__facts">
+              <dt>{copy.branchLabel}</dt>
+              <dd><code>{t.branches.join(", ")}</code></dd>
+              <dt>{copy.startedLabel}</dt>
+              <dd><time datetime={t.firstCommitAt}>{fmt(t.firstCommitAt)}</time></dd>
+              <dt>{copy.mergedLabel}</dt>
+              <dd><time datetime={t.mergedAt}>{fmt(t.mergedAt)}</time></dd>
+              <dt>{copy.durationLabel}</dt>
+              <dd>{t.durationMinutes} {copy.durationUnit}</dd>
+              <dt>{copy.commitsLabel}</dt>
+              <dd>{t.commits}</dd>
+              <dt>{copy.prLabel}</dt>
+              <dd>{t.prs.map((pr, i) => <>{i > 0 && ", "}<a href={pr.url}>#{pr.number}</a></>)}</dd>
+              {t.parallelWith.length > 0 && (
+                <>
+                  <dt>{copy.parallelLabel}</dt>
+                  <dd>{t.parallelWith.join(", ")}</dd>
+                </>
+              )}
+            </dl>
+            {t.conflictFix && <p><a href={whatBrokeHref}>{copy.whatBrokeLabel}</a></p>}
+            <p class="run__files-label">{copy.filesLabel} ({t.files.length})</p>
+            <ul class="run__files">
+              {t.files.map((file) => <li><code>{file}</code></li>)}
+            </ul>
+          </details>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<script>
+  // A bar is a link to its ticket's <details>: open it and put focus on its summary.
+  function openFromHash(focus: boolean) {
+    const id = decodeURIComponent(location.hash.slice(1));
+    const target = id ? document.getElementById(id) : null;
+    if (!(target instanceof HTMLDetailsElement)) return;
+    target.open = true;
+    if (focus) target.querySelector("summary")?.focus();
+  }
+  document.querySelectorAll("[data-replay-bar]").forEach((bar) => {
+    bar.addEventListener("click", () => requestAnimationFrame(() => openFromHash(true)));
+  });
+  addEventListener("hashchange", () => openFromHash(false));
+  openFromHash(false);
+</script>

@@ -4,4 +4,7 @@ export interface NavItem {
 }
 
 // The only place site navigation is defined.
-export const nav: NavItem[] = [{ label: "Shipped", href: "#shipped" }];
+export const nav: NavItem[] = [
+  { label: "Shipped", href: "#shipped" },
+  { label: "Build replay", href: "#build-replay" },
+];
