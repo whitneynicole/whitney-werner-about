@@ -2,16 +2,16 @@ import { execFileSync } from "node:child_process";
 import { readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import type { PackageJson, Repo } from "./types.js";
-import { walk } from "./walk.js";
+import { MAX_FILES, SKIP_DIRS, walk } from "./walk.js";
 
 /** Files larger than this are treated as unreadable (generated or binary). */
 const MAX_READ_BYTES = 1_000_000;
 
 export function loadRepo(root: string): Repo {
-  const tracked = git(root, ["ls-files", "-z"]);
-  const untracked = tracked && git(root, ["ls-files", "-z", "--others", "--exclude-standard"]);
-  // Inside git, files the repo ignores are local noise, not part of the repo.
-  const files = untracked ? walk(root).filter((f) => tracked?.has(f) || untracked.has(f)) : walk(root);
+  // Inside git, list what git would commit: ignored files are local noise, and
+  // skipping them before the file cap keeps a big ignored folder from hiding src/.
+  const listed = git(root, ["ls-files", "-z", "--cached", "--others", "--exclude-standard"]);
+  const files = listed ? gitFiles(root, listed) : walk(root);
   const fileSet = new Set(files);
   const cache = new Map<string, string | null>();
   let pkg: PackageJson | null | undefined;
@@ -26,7 +26,6 @@ export function loadRepo(root: string): Repo {
   return {
     root,
     files,
-    tracked,
     has: (path) => fileSet.has(path),
     read,
     packageJson() {
@@ -34,6 +33,25 @@ export function loadRepo(root: string): Repo {
       return pkg;
     },
   };
+}
+
+function gitFiles(root: string, listed: Set<string>): string[] {
+  const files: string[] = [];
+  for (const path of listed) {
+    if (files.length >= MAX_FILES) break;
+    if (path.split("/").some((part) => SKIP_DIRS.has(part))) continue;
+    if (isFile(join(root, path))) files.push(path);
+  }
+  return files.sort();
+}
+
+/** False for deleted-but-tracked paths and submodule directories. */
+function isFile(abs: string): boolean {
+  try {
+    return statSync(abs).isFile();
+  } catch {
+    return false;
+  }
 }
 
 function readText(abs: string): string | null {

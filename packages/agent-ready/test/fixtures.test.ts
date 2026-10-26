@@ -2,7 +2,7 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { formatReport } from "../src/format.js";
 import { scan } from "../src/score.js";
-import { FAKE_AWS_KEY, FIXTURES, secretRepo } from "./helpers.js";
+import { FAKE_AWS_KEY, FIXTURES, makeRepo, secretRepo } from "./helpers.js";
 
 const statuses = (root: string) => Object.fromEntries(scan(root).checks.map((c) => [c.id, c.status]));
 
@@ -13,7 +13,7 @@ describe("good repo", () => {
     expect(report.checks.filter((c) => c.status !== "pass")).toEqual([]);
     expect(report.score).toBe(100);
     expect(report.fixFirst).toEqual([]);
-    expect(report.repo).toBe("good");
+    expect(report.repo).toBe("good-fixture");
   });
 });
 
@@ -51,6 +51,13 @@ describe("repo with a fake secret", () => {
   it("never prints the secret, in text or JSON", () => {
     const report = scan(secretRepo());
     expect(formatReport(report)).not.toContain(FAKE_AWS_KEY);
+    expect(JSON.stringify(report)).not.toContain(FAKE_AWS_KEY);
+  });
+
+  it("does not echo a key held in a package.json script", () => {
+    const pkg = JSON.stringify({ scripts: { test: `AWS_KEY=${FAKE_AWS_KEY} node --test` } });
+    const report = scan(makeRepo({ "package.json": pkg }));
+    expect(report.checks.find((c) => c.id === "test-command")?.status).toBe("pass");
     expect(JSON.stringify(report)).not.toContain(FAKE_AWS_KEY);
   });
 });

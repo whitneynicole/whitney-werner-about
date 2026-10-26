@@ -21,7 +21,8 @@ export const testCommand: Check = {
   title: "Test command",
   run(repo) {
     const test = scripts(repo).test;
-    if (test && !NPM_DEFAULT_TEST.test(test)) return pass(`package.json "test": ${test}`);
+    // Name the script, never echo its body: it can hold an inline key.
+    if (test && !NPM_DEFAULT_TEST.test(test)) return pass('package.json has a "test" script');
     const pytest = detectPytest(repo);
     if (pytest) return pass(`${pytest} detected`);
     if (repo.has("go.mod") && repo.files.some((f) => f.endsWith("_test.go"))) return pass("go test detected");

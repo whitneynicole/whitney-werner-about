@@ -2,7 +2,7 @@ import type { Check } from "../types.js";
 import { extension, fail, isSource, lineCount, pass, preview, warn } from "./helpers.js";
 
 // A real read (`.X`, `[X]`, or a destructure ending in `;`), not prose that names it.
-const ENV_READ = /\bprocess\.env\s*(?:[.[;,)}]|$)/m;
+const ENV_READ = /\bprocess\.env\s*(?:[.?[;,)}]|$)/m;
 const JS_EXTENSIONS = new Set(["ts", "tsx", "mts", "cts", "js", "jsx", "mjs", "cjs", "astro", "vue", "svelte"]);
 const ENV_EXAMPLES = [".env.example", ".env.sample", ".env.template"];
 
@@ -82,15 +82,15 @@ const SECRET_PATTERNS: Array<{ kind: string; pattern: RegExp }> = [
   { kind: "Stripe live key", pattern: /\b[rs]k_live_[A-Za-z0-9]{20,}/ },
   { kind: "Slack token", pattern: /\bxox[abprs]-[A-Za-z0-9-]{10,}/ },
   { kind: "Google API key", pattern: /\bAIza[0-9A-Za-z_-]{35}/ },
-  { kind: "Private key", pattern: /-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP )?PRIVATE KEY(?: BLOCK)?-----/ },
+  { kind: "Private key", pattern: /-----BEGIN (?:RSA |EC |DSA |OPENSSH |PGP |ENCRYPTED )?PRIVATE KEY(?: BLOCK)?-----/ },
 ];
 
 export const secrets: Check = {
   id: "secrets",
   title: "Secrets",
   run(repo) {
-    // Only committed files matter; outside git, every scanned file counts.
-    const files = repo.tracked ? repo.files.filter((f) => repo.tracked?.has(f)) : repo.files;
+    // repo.files already drops git-ignored files, so this is what would be committed.
+    const files = repo.files;
     const hits: string[] = [];
     for (const file of files) {
       const text = repo.read(file);

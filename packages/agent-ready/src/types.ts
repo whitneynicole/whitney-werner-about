@@ -21,7 +21,7 @@ export interface Check {
 export interface Report {
   tool: "agent-ready";
   version: string;
-  /** Folder name of the scanned repo (never an absolute path). */
+  /** package.json name, else the folder name (never an absolute path). */
   repo: string;
   score: number;
   maxScore: 100;
@@ -33,10 +33,8 @@ export interface Report {
 
 export interface Repo {
   root: string;
-  /** Every file under root (POSIX-style relative paths), minus the skip list. */
+  /** Files under root (POSIX relative paths), minus the skip list and, in git, ignored files. */
   files: string[];
-  /** Files tracked by git, or null when root is not inside a git work tree. */
-  tracked: Set<string> | null;
   has(path: string): boolean;
   /** UTF-8 contents, or null for missing, binary or very large files. Cached. */
   read(path: string): string | null;
@@ -44,5 +42,6 @@ export interface Repo {
 }
 
 export interface PackageJson {
+  name?: string;
   scripts?: Record<string, string>;
 }

@@ -1,4 +1,6 @@
 import { execFileSync } from "node:child_process";
+import { writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { FAKE_AWS_KEY, check, makeRepo } from "./helpers.js";
 
@@ -21,6 +23,11 @@ describe("commands documented", () => {
     const result = check(makeRepo({ "README.md": "Run `pnpm install` then `pnpm test`." }), "commands-documented");
     expect(result.status).toBe("warn");
     expect(result.detail).toBe("Missing build command");
+  });
+
+  it("allows flags between the package manager and the command", () => {
+    const readme = "`pnpm install`, `pnpm -r test`, `pnpm --filter site build`";
+    expect(check(makeRepo({ "README.md": readme }), "commands-documented").status).toBe("pass");
   });
 });
 
@@ -57,6 +64,10 @@ describe("env example", () => {
     });
     expect(check(repo, "env-example").status).toBe("pass");
   });
+
+  it("sees optional-chained reads", () => {
+    expect(check(makeRepo({ "a.js": `${ENV}?.TOKEN;\n` }), "env-example").status).toBe("fail");
+  });
 });
 
 describe("file size", () => {
@@ -90,15 +101,19 @@ describe("lockfile", () => {
 });
 
 describe("secrets", () => {
-  it("only counts files git would commit", () => {
+  it("skips git-ignored files but scans untracked ones", () => {
     const repo = makeRepo({ ".gitignore": ".env\n", ".env": `KEY=${FAKE_AWS_KEY}\n`, "a.js": "export {};\n" });
     execFileSync("git", ["init", "-q"], { cwd: repo });
     execFileSync("git", ["add", "."], { cwd: repo });
     expect(check(repo, "secrets").status).toBe("pass");
+    writeFileSync(join(repo, "new.js"), `export const k = "${FAKE_AWS_KEY}";\n`);
+    expect(check(repo, "secrets").status).toBe("fail");
   });
 
   it("flags a private key block", () => {
-    const pem = ["-----BEGIN", "RSA PRIVATE KEY-----"].join(" ");
-    expect(check(makeRepo({ "id_rsa": `${pem}\nabc\n` }), "secrets").status).toBe("fail");
+    for (const kind of ["RSA PRIVATE", "ENCRYPTED PRIVATE"]) {
+      const pem = ["-----BEGIN", `${kind} KEY-----`].join(" ");
+      expect(check(makeRepo({ id_rsa: `${pem}\nabc\n` }), "secrets").status).toBe("fail");
+    }
   });
 });

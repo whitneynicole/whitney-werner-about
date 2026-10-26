@@ -26,7 +26,8 @@ export const projectContext: Check = {
   },
 };
 
-const PM = String.raw`(?:npm|pnpm|yarn|bun)`;
+// A package manager, optionally followed by a few flags (`pnpm -r`, `pnpm --filter site`).
+const PM = String.raw`(?:npm|pnpm|yarn|bun)(?:\s+-{1,2}[\w-]+(?:[=\s][\w@./*-]+)?)*`;
 
 /** Patterns that count as naming each command, across common ecosystems. */
 const COMMANDS: Record<"install" | "test" | "build", RegExp> = {
