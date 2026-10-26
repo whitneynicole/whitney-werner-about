@@ -1,0 +1,70 @@
+---
+import { getEntry, render } from "astro:content";
+
+const FILE = "src/content/field-report.md";
+
+function requireString(value: unknown, where: string): string {
+  if (typeof value !== "string" || value.trim() === "") {
+    throw new Error(`${FILE}: ${where} must be a non-empty string`);
+  }
+  return value;
+}
+
+// Title and intro come from field-report.md frontmatter; the points are the
+// markdown body, rendered exactly as Whitney wrote it.
+const entry = await getEntry("pages", "field-report");
+if (!entry) throw new Error(`${FILE} is missing`);
+const data = entry.data as Record<string, unknown>;
+const title = requireString(data.title, `frontmatter "title"`);
+const intro = requireString(data.intro, `frontmatter "intro"`);
+const { Content } = await render(entry);
+---
+
+<section id="field-report" class="field" aria-labelledby="field-report-heading">
+  <div class="container">
+    <h2 id="field-report-heading">{title}</h2>
+    <p class="field__intro">{intro}</p>
+    <div class="field__points" data-reveal>
+      <Content />
+    </div>
+  </div>
+</section>
+
+<script>
+  import "../scripts/reveal";
+</script>
+
+<style>
+  .field {
+    padding-block: var(--space-7) var(--space-8);
+  }
+
+  .field__intro,
+  .field__points {
+    max-width: 44rem;
+  }
+
+  .field__intro {
+    font-size: var(--text-lg);
+    margin-bottom: var(--space-6);
+  }
+
+  .field__points :global(h3) {
+    color: var(--color-accent);
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-3);
+  }
+
+  .field__points :global(h3:first-child) {
+    margin-top: 0;
+  }
+
+  /* Each bold label sits on its own source line; keep those line breaks. */
+  .field__points :global(p) {
+    white-space: pre-line;
+  }
+
+  .field__points :global(strong) {
+    color: var(--color-ink);
+  }
+</style>

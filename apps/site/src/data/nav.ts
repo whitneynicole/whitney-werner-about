@@ -8,4 +8,5 @@ export const nav: NavItem[] = [
   { label: "Shipped", href: "#shipped" },
   { label: "Build replay", href: "#build-replay" },
   { label: "Playbook", href: "#playbook" },
+  { label: "Field report", href: "#field-report" },
 ];
