@@ -2,9 +2,9 @@
 
 # whitney-werner-about
 
-A single-page site for Whitney Werner, built entirely through Fredrin tickets as an
-application for Fredrin's Forward Deployed Engineer role, plus `agent-ready`, a small
-TypeScript CLI that scores how ready any repo is for coding agents.
+A single-page site for Whitney Werner, built through Fredrin tickets (merge conflicts
+resolved by hand) as an application for Fredrin's Forward Deployed Engineer role,
+plus `agent-ready`, a small TypeScript CLI that scores how ready any repo is for coding agents.
 
 - **Live page:** _add the Vercel production URL here after the first deploy (see [Deploy](#deploy))_
 - **Whitney's site:** [whitneywerner.com](https://whitneywerner.com/?utm_source=fredrin&utm_medium=job_application&utm_campaign=job_search)
@@ -20,7 +20,7 @@ each, in waves:
   sections) ran in parallel. T04 (CI) waited on T02, because CI runs `agent-ready --min 80`.
 - **Wave 2:** T05 (build replay) and T06 (playbook) ran in parallel on purpose: both
   edit `nav.ts` and `index.astro`, so a real conflict would happen. T07 (polish)
-  followed T01, T02 and T04.
+  overlapped with both.
 - **Last:** T08, this README, the field report, and the deploy.
 
 The page's Build replay section reads this repo's own git history, so the timeline
