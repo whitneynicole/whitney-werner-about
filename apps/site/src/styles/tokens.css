@@ -1,0 +1,57 @@
+/* Design tokens. Values for color come from CONTEXT.md; never use orange. */
+:root {
+  /* Color */
+  --color-bg: #f6f1e8;
+  --color-surface: #fffcf7;
+  --color-ink: #14171c;
+  --color-accent: #1f3a5c;
+  --color-muted: #666c76;
+  --color-border: #ddd4c4;
+  --color-focus: var(--color-accent);
+
+  /* Type */
+  --font-heading: "Lora", Georgia, "Times New Roman", serif;
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --leading-tight: 1.2;
+  --leading-body: 1.6;
+
+  /* Fluid type scale (~1.25 ratio), 360px to 1280px viewports */
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: clamp(1.125rem, 1.08rem + 0.2vw, 1.25rem);
+  --text-xl: clamp(1.25rem, 1.15rem + 0.45vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.3rem + 0.9vw, 2rem);
+  --text-3xl: clamp(1.875rem, 1.5rem + 1.6vw, 2.75rem);
+  --text-4xl: clamp(2.25rem, 1.7rem + 2.4vw, 3.5rem);
+
+  /* Spacing (4px base) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4rem;
+  --space-9: 6rem;
+
+  /* Radius */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 999px;
+
+  /* Layout */
+  --content-width: 72rem;
+  --gutter: clamp(1rem, 4vw, 2rem);
+
+  /* Motion */
+  --duration-fast: 150ms;
+  --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-fast: 0ms;
+  }
+}

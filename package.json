@@ -1,0 +1,15 @@
+{
+  "name": "whitney-werner-about",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.15.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "build": "pnpm -r --if-present build",
+    "agent-ready": "echo \"agent-ready: not built yet\""
+  }
+}
