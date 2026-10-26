@@ -10,6 +10,6 @@
     "typecheck": "pnpm -r --if-present typecheck",
     "test": "pnpm -r --if-present test",
     "build": "pnpm -r --if-present build",
-    "agent-ready": "echo \"agent-ready: not built yet\""
+    "agent-ready": "pnpm --silent --filter agent-ready build && node packages/agent-ready/dist/cli.js"
   }
 }

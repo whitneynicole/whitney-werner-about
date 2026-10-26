@@ -1,0 +1,10 @@
+{
+  "name": "good-fixture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node --check src/server.js",
+    "lint": "node --check src/server.js",
+    "test": "node --test"
+  }
+}
