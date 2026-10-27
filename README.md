@@ -32,7 +32,7 @@ From [`notes.md`](notes.md) only:
 
 1. **An interrupted run looked finished.** T05's Worker was likely cut off by the
    Claude session limit. It left a single "(WIP)" commit (data script only, no UI),
-   and the ticket still moved to Review looking finished. The coach's code review
+   and the ticket still moved to Review looking finished. My separate review agent ([`COACH_PROMPT.md`](COACH_PROMPT.md), a Claude Code session that reviewed every PR and never wrote code)
    caught it by checking the diff against the ticket.
 2. **A lockfile conflict on rebase.** T05's rebase conflicted in
    `apps/site/package.json`: T04 added Playwright/axe and T05 added tsx in the same
@@ -47,7 +47,7 @@ From [`notes.md`](notes.md) only:
    showing. T07 was rebased by hand: `package.json` kept T05's prebuild and T07's new
    build script plus its share-card packages, and the lockfile was regenerated.
 5. **A YAML colon broke main.** A content edit put an unquoted colon in YAML
-   frontmatter and broke main; the coach caught it while testing the T07 merge.
+   frontmatter and broke main; my review agent caught it while testing the T07 merge.
    Quoting the value fixed it.
 
 ## Run `agent-ready` on any repo

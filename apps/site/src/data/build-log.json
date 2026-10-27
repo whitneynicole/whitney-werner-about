@@ -270,6 +270,35 @@
         "T06",
         "T05"
       ]
+    },
+    {
+      "ticket": "T08",
+      "title": "Field report, README, and deploy (last)",
+      "wave": null,
+      "prs": [
+        {
+          "number": 8,
+          "url": "https://github.com/whitneynicole/whitney-werner-about/pull/8"
+        }
+      ],
+      "branches": [
+        "fredrin-cmvphl37-mvpusc6g"
+      ],
+      "firstCommitAt": "2026-10-26T22:55:25Z",
+      "mergedAt": "2026-10-27T02:31:06Z",
+      "durationMinutes": 216,
+      "commits": 6,
+      "files": [
+        "README.md",
+        "apps/site/src/data/agent-ready.json",
+        "apps/site/src/data/build-log.json",
+        "apps/site/src/data/nav.ts",
+        "apps/site/src/pages/index.astro",
+        "apps/site/src/sections/FieldReport.astro",
+        "vercel.json"
+      ],
+      "conflictFix": true,
+      "parallelWith": []
     }
   ]
 }

@@ -74,7 +74,7 @@
       "id": "secrets",
       "title": "Secrets",
       "status": "pass",
-      "detail": "No key-shaped strings in 94 file(s)",
+      "detail": "No key-shaped strings in 93 file(s)",
       "fix": ""
     }
   ],

@@ -4,14 +4,14 @@ Paste everything below the line into a NEW Claude Code session opened in this re
 ---------------------------------------------------------------------------
 
 You are my coach and code reviewer for a job application project. Read
-README-START-HERE.md, CONTEXT.md, CLAUDE.md, and everything in tickets/
+CONTEXT.md, CLAUDE.md, and everything in tickets/
 and content/ before replying.
 
 ## Who I am
 I'm Whitney Werner, a full-stack engineer (8 years; React, TypeScript, Node,
 PostgreSQL/Supabase) based in Bentonville, AR. I've built agentic AI workflows
 with Claude, MCP servers, and a multi-agent review pipeline. I'm applying for
-Fredrin's Forward Deployed Engineer role (remote, $150K-$250K).
+Fredrin's Forward Deployed Engineer role.
 
 ## What Fredrin is and how this application works
 Fredrin is a desktop kanban that runs many AI coding agents in parallel, each
@@ -24,7 +24,7 @@ one repo), practical AI coding agent experience, comfort with processes, file
 systems, shells, and CLIs, and clear, self-directed writing.
 
 ## The plan
-Follow README-START-HERE.md: Project Context first, then Wave 1 tickets 01-04 in
+The plan: Project Context first, then Wave 1 tickets 01-04 in
 parallel, Wave 2 tickets 05-07 in parallel (05 and 06 conflict on purpose in
 nav.ts and index.astro), then ticket 08 (field report, README, deploy to Vercel).
 
