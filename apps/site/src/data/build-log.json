@@ -135,6 +135,141 @@
       "parallelWith": [
         "T03"
       ]
+    },
+    {
+      "ticket": "T04",
+      "title": "CI that reports back to the board",
+      "wave": 1,
+      "prs": [
+        {
+          "number": 4,
+          "url": "https://github.com/whitneynicole/whitney-werner-about/pull/4"
+        }
+      ],
+      "branches": [
+        "fredrin-cmvphl17-mvpjv5by"
+      ],
+      "firstCommitAt": "2026-10-26T17:50:31Z",
+      "mergedAt": "2026-10-26T21:13:36Z",
+      "durationMinutes": 203,
+      "commits": 5,
+      "files": [
+        ".github/workflows/ci.yml",
+        ".gitignore",
+        "README.md",
+        "apps/site/package.json",
+        "apps/site/tests/smoke.spec.ts",
+        "lighthouserc.json",
+        "pnpm-lock.yaml"
+      ],
+      "conflictFix": false,
+      "parallelWith": [
+        "T06",
+        "T05"
+      ]
+    },
+    {
+      "ticket": "T06",
+      "title": "\"My first 30 days at a Fredrin customer\" section",
+      "wave": 2,
+      "prs": [
+        {
+          "number": 5,
+          "url": "https://github.com/whitneynicole/whitney-werner-about/pull/5"
+        }
+      ],
+      "branches": [
+        "fredrin-cmvphl22-mvpjydq9"
+      ],
+      "firstCommitAt": "2026-10-26T17:52:20Z",
+      "mergedAt": "2026-10-26T22:01:10Z",
+      "durationMinutes": 249,
+      "commits": 1,
+      "files": [
+        "apps/site/src/content/playbook.md",
+        "apps/site/src/data/nav.ts",
+        "apps/site/src/pages/index.astro",
+        "apps/site/src/sections/Playbook.astro"
+      ],
+      "conflictFix": true,
+      "parallelWith": [
+        "T04",
+        "T05",
+        "T07"
+      ]
+    },
+    {
+      "ticket": "T05",
+      "title": "\"Build replay\" section from real git history",
+      "wave": 2,
+      "prs": [
+        {
+          "number": 6,
+          "url": "https://github.com/whitneynicole/whitney-werner-about/pull/6"
+        }
+      ],
+      "branches": [
+        "fredrin-cmvphl1n-mvpjycrb"
+      ],
+      "firstCommitAt": "2026-10-26T17:53:29Z",
+      "mergedAt": "2026-10-26T21:45:38Z",
+      "durationMinutes": 232,
+      "commits": 3,
+      "files": [
+        "apps/site/package.json",
+        "apps/site/scripts/build-log.ts",
+        "apps/site/src/content/build-replay.md",
+        "apps/site/src/data/agent-ready.json",
+        "apps/site/src/data/build-log.json",
+        "apps/site/src/data/nav.ts",
+        "apps/site/src/pages/index.astro",
+        "apps/site/src/sections/BuildReplay.astro",
+        "apps/site/src/styles/build-replay.css",
+        "pnpm-lock.yaml"
+      ],
+      "conflictFix": false,
+      "parallelWith": [
+        "T04",
+        "T06",
+        "T07"
+      ]
+    },
+    {
+      "ticket": "T07",
+      "title": "Polish, social card, and performance",
+      "wave": 2,
+      "prs": [
+        {
+          "number": 7,
+          "url": "https://github.com/whitneynicole/whitney-werner-about/pull/7"
+        }
+      ],
+      "branches": [
+        "fredrin-cmvphl2i-mvpr8jm6"
+      ],
+      "firstCommitAt": "2026-10-26T21:20:24Z",
+      "mergedAt": "2026-10-26T22:48:05Z",
+      "durationMinutes": 88,
+      "commits": 3,
+      "files": [
+        ".env.example",
+        "apps/site/astro.config.mjs",
+        "apps/site/package.json",
+        "apps/site/public/favicon.svg",
+        "apps/site/src/layouts/Base.astro",
+        "apps/site/src/lib/repo-root.ts",
+        "apps/site/src/pages/og.png.ts",
+        "apps/site/src/pages/robots.txt.ts",
+        "apps/site/src/pages/sitemap.xml.ts",
+        "apps/site/src/styles/print.css",
+        "apps/site/src/styles/tokens.css",
+        "pnpm-lock.yaml"
+      ],
+      "conflictFix": false,
+      "parallelWith": [
+        "T06",
+        "T05"
+      ]
     }
   ]
 }
