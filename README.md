@@ -6,7 +6,7 @@ A single-page site for Whitney Werner, built through Fredrin tickets (merge conf
 resolved by hand) as an application for Fredrin's Forward Deployed Engineer role,
 plus `agent-ready`, a small TypeScript CLI that scores how ready any repo is for coding agents.
 
-- **Live page:** _add the Vercel production URL here after the first deploy (see [Deploy](#deploy))_
+- **Live page:** [whitney-werner-about-site.vercel.app](https://whitney-werner-about-site.vercel.app)
 - **Whitney's site:** [whitneywerner.com](https://whitneywerner.com/?utm_source=fredrin&utm_medium=job_application&utm_campaign=job_search)
 
 ## How it was built
