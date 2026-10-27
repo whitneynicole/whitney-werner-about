@@ -28,20 +28,27 @@ on the site is the real one.
 
 ## What broke
 
-From [`notes.md`](notes.md) and the commit history:
+From [`notes.md`](notes.md) only:
 
 1. **An interrupted run looked finished.** T05's Worker was likely cut off by the
    Claude session limit. It left a single "(WIP)" commit (data script only, no UI),
-   and the ticket still moved to Review looking done. A code review caught it by
-   checking the diff against the ticket, not the board.
-2. **Lockfile conflicts on rebase.** T05 and T07 both hit `package.json` and
-   `pnpm-lock.yaml` conflicts when rebased onto main.
-3. **The planned conflict.** T05 merged first; T06 then rebased onto it and
-   conflicted on `nav.ts` and `index.astro`. Whitney resolved it by hand, keeping both
-   sides: the nav is Shipped, Build replay, Playbook, and the page renders Build
-   replay then Playbook.
-4. **A YAML colon broke main.** The build replay intro had an unquoted colon in its
-   frontmatter, so the YAML stopped parsing. Quoting the intro fixed it.
+   and the ticket still moved to Review looking finished. The coach's code review
+   caught it by checking the diff against the ticket.
+2. **A lockfile conflict on rebase.** T05's rebase conflicted in
+   `apps/site/package.json`: T04 added Playwright/axe and T05 added tsx in the same
+   devDependencies spot. Both sides were kept; `pnpm-lock.yaml` was taken from main
+   and regenerated with `pnpm install` instead of hand-edited.
+3. **The planned conflict.** T06's rebase onto T05 stopped on `nav.ts` and
+   `index.astro`. Both sides were kept (nav: Shipped, Build replay, Playbook; page:
+   BuildReplay then Playbook), and the commit message was amended to say
+   "resolve ... conflict" so the build replay flags it.
+4. **Merge started a run nobody asked for.** Clicking Merge on T07 started an
+   automatic "Resolving..." run without asking, and it stopped with conflicts still
+   showing. T07 was rebased by hand: `package.json` kept T05's prebuild and T07's new
+   build script plus its share-card packages, and the lockfile was regenerated.
+5. **A YAML colon broke main.** A content edit put an unquoted colon in YAML
+   frontmatter and broke main; the coach caught it while testing the T07 merge.
+   Quoting the value fixed it.
 
 ## Run `agent-ready` on any repo
 
@@ -81,15 +88,15 @@ the install command, build command (`pnpm build`) and output directory
 2. Leave **Root Directory** as the repo root (`./`). The framework preset shows
    **Astro**; leave Build, Output and Install settings on their defaults so
    `vercel.json` applies.
-3. Under **Environment Variables**, nothing is required: the build uses Vercel's
+3. Under **Environment Variables**, add `ENABLE_EXPERIMENTAL_COREPACK` = `1` so Vercel
+   uses the pnpm version pinned in `package.json` (`packageManager`) instead of
+   guessing from the lockfile. The site URL needs no variable: the build uses Vercel's
    `VERCEL_PROJECT_PRODUCTION_URL` for canonical, sitemap and social card links. To use
    a custom domain instead, add `SITE_URL` = `https://<your-domain>` for Production.
    Keep **Settings → Environment Variables → Automatically expose System Environment
    Variables** on; with neither variable, the build fails on purpose so it never ships
    localhost links.
-4. Click **Deploy**. If install fails on the pnpm version, add
-   `ENABLE_EXPERIMENTAL_COREPACK` = `1` so Vercel uses the `packageManager` pinned in
-   `package.json`, then redeploy.
+4. Click **Deploy**.
 5. Open the production URL, check the page, and paste the URL into **Live page** at
    the top of this README.
 
