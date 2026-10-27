@@ -36,3 +36,8 @@ board did. This becomes the field report and the README's "What broke."
 
 ## Wave 2
 - T05's Worker was likely cut off by the Claude session limit; it left a single "(WIP)" commit (data script only, no UI) and the ticket still moved to Review looking finished. The board made it look done; my coach's code review caught it by checking the diff against the ticket. Fredrin should mark interrupted runs clearly (e.g. "Stopped: usage limit") instead of sending them to Review.
+- T05 rebase conflict in apps/site/package.json: T04 added Playwright/axe and T05 added tsx in the same devDependencies spot. Kept both sides; took main's pnpm-lock.yaml (git checkout --ours) and regenerated it with pnpm install instead of hand-editing.
+- T06, the planned conflict: rebase onto T05 stopped on nav.ts and index.astro. Kept both sides (nav: Shipped, Build replay, Playbook; page: BuildReplay then Playbook), then amended the commit message to say "resolve ... conflict" so the build replay flags it.
+- Fredrin kept saying T06 "had conflicts" after my force-push while GitHub showed MERGEABLE CLEAN with green CI. Merged it with gh pr merge 5 --squash instead.
+- Clicking Merge on T07 started an automatic "Resolving..." run without asking; it stopped with conflicts still showing. I rebased T07 by hand: package.json kept T05's prebuild and T07's new build script plus its share-card packages; lockfile regenerated.
+- My own content edit (an unquoted colon in YAML frontmatter) broke main; the coach caught it while testing the T07 merge. Fixed by quoting the value.
